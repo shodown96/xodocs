@@ -1,15 +1,15 @@
 # 🤝 Contributing to Xodocs
 
-First off, thank you for taking the time to contribute to **XoDocs**!  
+First off, thank you for taking the time to contribute to **Xodocs**!  
 Your help makes this project better, more reliable, and more accessible for the developer community.
 
 This document will guide you through how to get started, what to contribute, and how to make sure your pull request can be merged smoothly.
 
 ---
 
-## 📚 About XoDocs
+## 📚 About Xodocs
 
-XoDocs is a developer-first tool for generating clean OpenAPI documentation using Express, Zod, and Swagger under the hood.  
+Xodocs is a developer-first tool for generating clean OpenAPI documentation using Express, Zod, and Swagger under the hood.  
 It minimizes boilerplate by extracting structured annotations from your controllers and linking them to Zod schemas.
 
 ---
@@ -40,13 +40,13 @@ Make sure your changes are reflected and tests are passing.
 
 ```txt
 xodocs/
-├── example/                    # Sample Express app using XoDocs
+├── example/                    # Sample Express app using Xodocs
 │   └── src/
 │       ├── controllers/
 │       ├── schemas/
 │       └── index.ts
 │
-├── src/                        # XoDocs core library
+├── src/                        # Xodocs core library
 │   ├── generate-docs/          # Main documentation generator logic
 │   ├── examples/               # Internal schema/controller examples
 │   ├── types/                  # Shared type definitions

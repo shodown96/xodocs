@@ -1,6 +1,6 @@
-# 🧾 XoDocs
+# 🧾 Xodocs
 
-XoDocs is a developer-first tool that generates clean, human-readable OpenAPI documentation for your Express backend application using Zod and Swagger under the hood.
+Xodocs is a developer-first tool that generates clean, human-readable OpenAPI documentation for your Express backend application using Zod and Swagger under the hood.
 
 It simplifies the documentation process by reducing the amount of boilerplate comments required, promoting schema reusability, and keeping your API definitions tightly coupled to your code — not scattered across YAML files or verbose decorators.
 
@@ -19,9 +19,9 @@ These issues lead to bloated, error-prone documentation that is painful to maint
 
 ---
 
-## ✅ The Solution: XoDocs
+## ✅ The Solution: Xodocs
 
-XoDocs solves this by providing a **clean, code-first documentation experience** for Zod + Express applications.
+Xodocs solves this by providing a **clean, code-first documentation experience** for Zod + Express applications.
 
 ✨ **Key features:**
 
@@ -73,7 +73,7 @@ const app = express();
 
 generateOpenAPIDocs(app, {
     info: {
-        title: 'XoDocs Sample',
+        title: 'Xodocs Sample',
         description: 'This is the official API of "Xodocs Sample"',
     },
     schemas: {
@@ -148,7 +148,7 @@ export class AuthController {
 }
 ```
 
-🧠 XoDocs will automatically read these annotations, match the method name, and link the referenced schemas from the config.
+🧠 Xodocs will automatically read these annotations, match the method name, and link the referenced schemas from the config.
 
 ---
 
@@ -195,7 +195,7 @@ export const UserParamsId = z.object({
 
 ## 🌐 Output
 
-Once configured, XoDocs generates:
+Once configured, Xodocs generates:
 
 - A beautiful Swagger UI at `/swagger`
 - A raw OpenAPI JSON spec at `/swagger/openapi.json`
@@ -217,7 +217,7 @@ auth: {
 }
 ```
 
-XoDocs will automatically include this security scheme in the spec and apply it to all routes except those marked with `@public`.
+Xodocs will automatically include this security scheme in the spec and apply it to all routes except those marked with `@public`.
 
 ---
 
@@ -227,15 +227,15 @@ We welcome contributions!
 
 - Found a bug?
 - Have a feature idea?
-- Want to help make XoDocs better?
+- Want to help make Xodocs better?
 
 👉 **[Contribute here](https://github.com/elijahsoladoye/xodocs)**
 
 ---
 
-## 🧠 Why XoDocs?
+## 🧠 Why Xodocs?
 
-Unlike traditional Swagger tools that rely on bloated decorators or out-of-sync YAML files, XoDocs embraces:
+Unlike traditional Swagger tools that rely on bloated decorators or out-of-sync YAML files, Xodocs embraces:
 
 - 📌 Simplicity
 - 🧩 Zod-first validation and schema linking
