@@ -2,6 +2,7 @@ import { Project, SyntaxKind } from 'ts-morph';
 import { pathToFileURL } from 'url';
 import { z, ZodObject, ZodTypeAny } from 'zod';
 import { RouteComment, SchemaEntry } from './types';
+import path from 'path';
 
 export function findAllControllerRoutes(): RouteComment[] {
     const project = new Project({
@@ -83,6 +84,7 @@ export function findAllControllerRoutes(): RouteComment[] {
 }
 
 export function buildOpenAPIPaths() {
+    getAllZodSchemas()
     const routes = findAllControllerRoutes();
     const paths: Record<string, any> = {};
 
@@ -128,6 +130,12 @@ export async function getAllZodSchemas(): Promise<SchemaEntry[]> {
 
     for (const sourceFile of sourceFiles) {
         const filePath = sourceFile.getFilePath();
+
+        // Skip declaration files and node_modules
+        if (filePath.endsWith('.d.ts') || filePath.includes('node_modules')) {
+            continue;
+        }
+
         const exportedVars = sourceFile
             .getVariableDeclarations()
             .filter((decl) => decl.isExported());
@@ -136,7 +144,11 @@ export async function getAllZodSchemas(): Promise<SchemaEntry[]> {
 
         let mod: Record<string, any>;
         try {
-            const modulePath = pathToFileURL(filePath).href;
+            // Convert to relative path from current working directory
+            // const relativePath = path.relative(process.cwd(), filePath);
+
+            // Use dynamic import with proper path resolution
+            const modulePath = path.resolve(filePath);
             mod = await import(modulePath);
         } catch (err) {
             console.warn(`Failed to import ${filePath}:`, err);
@@ -157,10 +169,10 @@ export async function getAllZodSchemas(): Promise<SchemaEntry[]> {
 
 export const createParameters = (zodObject: ZodObject<any>): any[] => {
     if (!zodObject) return [];
-    return Object.entries(zodObject.shape).flatMap(([key, schema]: any) => {
+    const params = Object.entries(zodObject.shape).flatMap(([key, schema]: any) => {
         const isOptional = schema.isOptional?.() ?? false;
         const unwrapped = isOptional ? schema.unwrap() : schema;
-        const openapi = (unwrapped as any)._def?.zodOpenApi.openapi.metadata;
+        const openapi = (unwrapped as any)._def?.zodOpenApi.openapi;
 
         if (!openapi?.param) return [];
 
@@ -170,14 +182,15 @@ export const createParameters = (zodObject: ZodObject<any>): any[] => {
             required: openapi.param.in === 'path' ? true : !isOptional,
             description: openapi.description,
             example: openapi.example,
+            default: openapi.example || openapi?.default,
             schema: {
                 type: inferType(unwrapped),
                 format: inferFormat(unwrapped),
             },
         };
-
         return param;
     });
+    return params
 };
 
 function inferType(schema: ZodTypeAny): string {

@@ -13,8 +13,8 @@
         "outDir": "dist",
         "declaration": true,
         "declarationDir": "dist",
-        "emitDeclarationOnly": true
+        "emitDeclarationOnly": false,
     },
-    "include": ["src/**/*"],
+    "include": ["src"],
     "exclude": ["node_modules", "dist"]
 }

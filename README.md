@@ -21,7 +21,7 @@ These issues lead to bloated, error-prone documentation that is painful to maint
 
 ## ✅ The Solution: Xodocs
 
-Xodocs solves this by providing a **clean, code-first documentation experience** for Zod + Express applications.
+Xodocs solves this by providing a **clean, code-first documentation experience** for Express applications.
 
 ✨ **Key features:**
 
@@ -41,13 +41,13 @@ Xodocs solves this by providing a **clean, code-first documentation experience**
 Install `xodocs` along with its peer dependency `zod-openapi`:
 
 ```bash
-npm install xodocs zod-openapi
+npm install xodocs zod zod-openapi
 ```
 
 or with yarn:
 
 ```bash
-yarn add xodocs zod-openapi
+yarn add xodocs zod zod-openapi
 ```
 
 ---
@@ -85,6 +85,7 @@ generateOpenAPIDocs(app, {
         in: 'header',
         scheme: 'token',
     },
+    baseURL: 'http://localhost:3000',
 });
 ```
 
@@ -97,6 +98,7 @@ generateOpenAPIDocs(app, {
 | `info`     | `Partial<InfoObject>`     | OpenAPI info object (e.g., title, version, description)        |
 | `docsPath` | `Partial<DocsPath>`       | Override default UI/JSON documentation routes                  |
 | `auth`     | `AuthConfig`              | Optional global authentication configuration                   |
+| `baseURL`  | `string`                  | Optional base URL of the express app.                          |
 | `schemas`  | `Record<string, ZodType>` | Zod schemas used in route annotations (`@response`, `@params`) |
 
 ---
@@ -137,7 +139,7 @@ export class AuthController {
         res.json({ token: 'abc123' });
     };
 
-    // @route POST /user/{id}
+    // @route GET /user/{id}
     // @summary Get user details
     // @response 200: AuthResponse
     // @params UserParamsId
@@ -177,17 +179,20 @@ export const UserParamsId = z.object({
                 name: 'id',
                 in: 'path',
             },
-            description: 'The UUID of the user',
             example: 'f8b50a58-23f5-4f20-a08b-53f233e704a1',
+            description: 'The UUID of the user',
         }),
-    page: z.number().openapi({
-        param: {
-            name: 'page',
-            in: 'query',
-        },
-        description: 'Page number',
-        example: 25,
-    }),
+    page: z
+        .number()
+        .int()
+        .openapi({
+            param: {
+                name: 'page',
+                in: 'query',
+            },
+            example: 25,
+            description: 'Page',
+        }),
 });
 ```
 
@@ -197,8 +202,8 @@ export const UserParamsId = z.object({
 
 Once configured, Xodocs generates:
 
-- A beautiful Swagger UI at `/swagger`
-- A raw OpenAPI JSON spec at `/swagger/openapi.json`
+- A beautiful Swagger UI at `/docs`
+- A raw OpenAPI JSON spec at `/docs/openapi.json`
 
 These can be easily customized with the `docsPath` config option.
 

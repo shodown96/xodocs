@@ -20,9 +20,9 @@ export const UserParamsId = z.object({
             example: 'f8b50a58-23f5-4f20-a08b-53f233e704a1',
             description: 'The UUID of the user',
         }),
-    page: z.number().openapi({
+    page: z.number().int().openapi({
         param: {
-            name: 'id',
+            name: 'page',
             in: 'query',
         },
         example: 25,

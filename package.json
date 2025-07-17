@@ -1,6 +1,6 @@
 {
     "name": "xodocs",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "Generate OpenAPI docs from Zod schemas and controller comments in Express.",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

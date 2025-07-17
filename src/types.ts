@@ -27,7 +27,8 @@ export type GenerateConfig = {
     info?: Partial<InfoObject>;
     docsPath?: Partial<DocsPath>;
     auth?: AuthConfig;
-    schemas: Record<string, ZodType>;
+    schemas: Record<string, ZodType>
+    baseURL?: string
 };
 
 type DocsPath = {
