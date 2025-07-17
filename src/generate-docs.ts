@@ -2,14 +2,26 @@ import { type Express } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import { createSchema } from 'zod-openapi';
 import { GenerateConfig, PathMethodObject } from './types';
-import { buildOpenAPIPaths, createParameters } from './utils';
+import { buildOpenAPIPaths, createParameters, getAllZodSchemas } from './utils';
 
 export async function generateOpenAPIDocs(
     app: Express,
-    config: GenerateConfig,
+    config?: GenerateConfig,
 ) {
-    const { info, auth, schemas, docsPath } = config;
+    const {
+        auth,
+        baseURL,
+        info = {
+            title: "API Docs",
+            version: "1.0.0"
+        },
+        docsPath = {
+            ui: "/docs",
+            json: "/docs/openapi.json",
+        } } = config || {};
+
     const paths = buildOpenAPIPaths();
+    const schemas = await getAllZodSchemas()
     // const transformed = Object.fromEntries(
     //     Object.entries(schemas).map(([key, schema]) => [
     //         key,
@@ -31,21 +43,23 @@ export async function generateOpenAPIDocs(
 
             for (const [statusCode, resDef] of Object.entries(responses)) {
                 const schemaName = resDef.description;
+                const schema = schemas.find(v => v.name === schemaName)?.schema
 
                 resolvedResponses[statusCode] = {
                     description: `${schemaName} response`,
                     content: {
                         'application/json': {
-                            schema: createSchema(schemas?.[schemaName]).schema,
+                            schema: schema ? createSchema(schema).schema : null,
                         },
                     },
                 };
             }
+            const paramSchema = schemas.find(v => v.name === params)?.schema
             resolvedPaths[path]![method] = {
                 summary,
                 tags,
                 parameters: params
-                    ? createParameters(schemas?.[params] as any)
+                    ? createParameters(paramSchema as any)
                     : undefined,
                 security: publicPath ? [] : undefined,
                 responses: resolvedResponses,
@@ -55,11 +69,7 @@ export async function generateOpenAPIDocs(
 
     const openapi = {
         openapi: '3.0.0',
-        info: {
-            title: info?.title || 'API Docs',
-            version: info?.version || '1.0.0',
-            ...info,
-        },
+        info,
         paths: resolvedPaths,
         security: {},
         components: {
@@ -90,11 +100,11 @@ export async function generateOpenAPIDocs(
         }
     }
 
-    const jsonPath = docsPath?.json || '/docs/openapi.json';
-    const uiPath = docsPath?.ui || '/docs';
+    const jsonPath = String(docsPath.json)
+    const uiPath = String(docsPath.ui);
     app.get(jsonPath, (_req, res): any => res.json(openapi));
     app.use(uiPath, swaggerUi.serve, swaggerUi.setup(openapi));
-    console.log(`[xodocs]: Serving Swagger UI docs at ${uiPath}`);
-    console.log(`[xodocs]: Serving Swagger JSON at ${jsonPath}`);
+    console.log(`[xodocs]: Serving Swagger UI docs at ${(baseURL || "") + uiPath}`);
+    console.log(`[xodocs]: Serving Swagger JSON at ${(baseURL || "") + jsonPath}`);
     return openapi;
 }

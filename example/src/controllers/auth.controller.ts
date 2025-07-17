@@ -10,7 +10,7 @@ export class AuthController {
         res.json({ token: 'abc123' });
     };
 
-    // @route POST /user/{id}
+    // @route GET /user/{id}
     // @summary Get user details
     // @response 200: AuthResponse
     // @params UserParamsId
